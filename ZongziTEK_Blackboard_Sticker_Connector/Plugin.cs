@@ -1,13 +1,17 @@
 ﻿using ClassIsland.Core;
 using ClassIsland.Core.Abstractions;
+using ClassIsland.Core.Abstractions.Services;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Controls;
 using ClassIsland.Core.Extensions.Registry;
+using ClassIsland.Shared;
 using ClassIsland.Shared.Helpers;
+using dotnetCampus.Ipc.CompilerServices.GeneratedProxies;
 using Iced.Intel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
+using ZongziTEK_Blackboard_Sticker_Connector.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
 using ZongziTEK_Blackboard_Sticker_Connector.Services;
 using ZongziTEK_Blackboard_Sticker_Connector.Views.Pages;
@@ -39,6 +43,11 @@ namespace ZongziTEK_Blackboard_Sticker_Connector
             // Add services
             services.AddHostedService<TimetableSyncService>();
             ConsoleHelper.WriteLog("注册课程表同步服务", "info");
+
+            // IPC
+            var ipcService = IAppHost.GetService<IIpcService>();
+            var timetableSyncService = IAppHost.GetService<TimetableSyncService>();
+            ipcService.IpcProvider.CreateIpcJoint<ITimetableService>(timetableSyncService);
         }
     }
 }

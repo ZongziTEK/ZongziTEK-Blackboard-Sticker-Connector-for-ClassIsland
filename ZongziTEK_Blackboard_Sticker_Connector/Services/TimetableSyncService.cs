@@ -4,15 +4,25 @@ using ClassIsland.Shared.Models.Profile;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
+using ZongziTEK_Blackboard_Sticker_Connector.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Services;
 
-public class TimetableSyncService : IHostedService
+public class TimetableSyncService : IHostedService, ITimetableService
 {
+    #region Methods
+    public List<Timetable.Lesson> GetCurrentTimetable()
+    {
+        return _currentTimetable;
+    }
+    #endregion
+
     private ILessonsService _lessonsService;
     private ClassPlan? _currentMonitoredClassPlan;
+    private List<Timetable.Lesson> _currentTimetable = new();
 
+    #region Events
     private void OnLessonsServicePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ILessonsService.CurrentClassPlan))
@@ -41,7 +51,9 @@ public class TimetableSyncService : IHostedService
         ConsoleHelper.WriteLog($"发现课表内有课程变化，课表名称：{((ClassPlan)sender).Name}", "info");
         SendCurrentTimetableToMyBaby();
     }
+    #endregion
 
+    #region Send to 宝宝
     private void SendCurrentTimetableToMyBaby()
     {
         SendTimetableToMyBaby(TimetableHelper.GetCurrentTimetable());
@@ -49,9 +61,16 @@ public class TimetableSyncService : IHostedService
 
     private void SendTimetableToMyBaby(List<Timetable.Lesson> timetable)
     {
+        _currentTimetable = timetable;
+
+        var ipcService = IAppHost.GetService<IIpcService>();
+        ipcService.BroadcastNotificationAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
+
         ConsoleHelper.WriteLog("向黑板贴发送课表", "info");
     }
+    #endregion
 
+    #region Start & End
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _lessonsService = IAppHost.GetService<ILessonsService>();
@@ -78,5 +97,6 @@ public class TimetableSyncService : IHostedService
 
         return Task.CompletedTask;
     }
+    #endregion
 }
 
