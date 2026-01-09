@@ -8,6 +8,7 @@ using ClassIsland.Core.Enums.SettingsWindow;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Views.Pages;
 
+[HidePageTitle]
 [SettingsPageInfo(
         "zongzitek.blackboard_sticker_connector.settingspage",
         "黑板贴连接器",
