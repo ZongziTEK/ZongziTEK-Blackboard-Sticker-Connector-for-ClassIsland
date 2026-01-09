@@ -1,0 +1,48 @@
+﻿<ci:SettingsPageBase xmlns="https://github.com/avaloniaui"
+					 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					 xmlns:ci="http://classisland.tech/schemas/xaml/core"
+					 xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+					 xmlns:pages="clr-namespace:ZongziTEK_Blackboard_Sticker_Connector.Views.Pages"
+					 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+					 x:Class="ZongziTEK_Blackboard_Sticker_Connector.Views.Pages.SettingsPage">
+	<ScrollViewer DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:SettingsPage}}">
+		<StackPanel Spacing="8" Margin="24">
+			<StackPanel>
+				<Label FontSize="20"
+					   VerticalAlignment="Center"
+					   Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+					ZongziTEK 黑板贴连接器
+				</Label>
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+					<ci:FluentIcon FontSize="60"
+								   Glyph="&#xF082;"
+								   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								   VerticalAlignment="Center" />
+					<Label VerticalAlignment="Center" FontSize="30">设置</Label>
+				</StackPanel>
+			</StackPanel>
+			<!--<ci:SettingsCard Margin="0,0,0,6"
+			IconGlyph="Sync"
+			Header="将课程表同步至黑板贴"
+			Description="开启时，ClassIsland 会将课程表同步至黑板贴，使黑板贴显示与 ClassIsland 相同的课表"
+			IsOn="{Binding Plugin.Settings.isTimetableShared}"/>
+			<ci:SettingsCard Margin="0,0,0,6"
+			IconGlyph="Visibility"
+			Header="自动隐藏 ClassIsland"
+			Description="开启时，ClassIsland 仅在黑板贴被遮挡时显示，避免显示内容重复"
+			IsOn="{Binding Plugin.Settings.isIslandAutomaticallyHidden}"/>
+			<ci:SettingsCard IconGlyph="Notifications"
+			Header="为避免重复提醒，请配置上下课提醒来源"
+			Description="点击右侧按钮配置上下课提醒来源">
+			<ci:SettingsCard.Switcher>
+			<StackPanel Orientation="Horizontal">
+			<Button Content="配置为 ClassIsland" Width="144" Padding="12,4" Margin="0,0,6,0"/>
+			<Button Content="配置为黑板贴" Width="144" Padding="12,4"/>
+			</StackPanel>
+			</ci:SettingsCard.Switcher>
+			</ci:SettingsCard>-->
+		</StackPanel>
+	</ScrollViewer>
+</ci:SettingsPageBase>

@@ -4,9 +4,11 @@ using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Controls;
 using ClassIsland.Core.Extensions.Registry;
 using ClassIsland.Shared.Helpers;
+using Iced.Intel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
+using ZongziTEK_Blackboard_Sticker_Connector.Views.Pages;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector
 {
@@ -20,8 +22,10 @@ namespace ZongziTEK_Blackboard_Sticker_Connector
             Settings = ConfigureFileHelper.LoadConfig<Settings>(Path.Combine(PluginConfigFolder, "Settings.json"));  // 加载配置文件
             Settings.PropertyChanged += (sender, args) =>
             {
-                ConfigureFileHelper.SaveConfig<Settings>(Path.Combine(PluginConfigFolder, "Settings.json"), Settings);  // 保存配置文件
+                ConfigureFileHelper.SaveConfig(Path.Combine(PluginConfigFolder, "Settings.json"), Settings);  // 保存配置文件
             };
+
+            services.AddSettingsPage<SettingsPage>();
         }
     }
 }
