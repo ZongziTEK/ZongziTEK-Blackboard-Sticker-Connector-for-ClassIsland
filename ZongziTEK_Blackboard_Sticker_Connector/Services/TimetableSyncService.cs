@@ -43,30 +43,30 @@ public class TimetableSyncService : IHostedService, ITimetableService
         _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
         ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
 
-        SendCurrentTimetableToMyBaby();
+        UpdateCurrentTimetableToMyBaby();
     }
 
     private void OnClassesChanged(object? sender, EventArgs e)
     {
         ConsoleHelper.WriteLog($"发现课表内有课程变化，课表名称：{((ClassPlan)sender).Name}", "info");
-        SendCurrentTimetableToMyBaby();
+        UpdateCurrentTimetableToMyBaby();
     }
     #endregion
 
     #region Send to 宝宝
-    private void SendCurrentTimetableToMyBaby()
+    private void UpdateCurrentTimetableToMyBaby()
     {
-        SendTimetableToMyBaby(TimetableHelper.GetCurrentTimetable());
+        UpdateTimetableToMyBaby(TimetableHelper.GetCurrentTimetable());
     }
 
-    private void SendTimetableToMyBaby(List<Timetable.Lesson> timetable)
+    private void UpdateTimetableToMyBaby(List<Timetable.Lesson> timetable)
     {
         _currentTimetable = timetable;
 
         var ipcService = IAppHost.GetService<IIpcService>();
         ipcService.BroadcastNotificationAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
 
-        ConsoleHelper.WriteLog("向黑板贴发送课表", "info");
+        ConsoleHelper.WriteLog("更新黑板贴课表", "info");
     }
     #endregion
 
@@ -82,7 +82,7 @@ public class TimetableSyncService : IHostedService, ITimetableService
         _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
         ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
 
-        SendCurrentTimetableToMyBaby();
+        UpdateCurrentTimetableToMyBaby();
 
         return Task.CompletedTask;
     }
