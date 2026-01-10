@@ -9,7 +9,8 @@ using ZongziTEK_Blackboard_Sticker_Connector.Models;
 namespace ZongziTEK_Blackboard_Sticker_Connector.IPC;
 
 [IpcPublic(IgnoresIpcException = true)]
-public interface ITimetableService
+public interface IConnectService
 {
     List<Timetable.Lesson> GetCurrentTimetable();
+    bool GetIsTimetableSyncEnabled();
 }

@@ -9,18 +9,24 @@ using ZongziTEK_Blackboard_Sticker_Connector.Models;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Services;
 
-public class TimetableSyncService : IHostedService, ITimetableService
+public class ConnectService : IHostedService, IConnectService
 {
     #region Methods
     public List<Timetable.Lesson> GetCurrentTimetable()
     {
         return _currentTimetable;
     }
+
+    public bool GetIsTimetableSyncEnabled()
+    {
+        return _settings.IsTimetableSyncEnabled;
+    }
     #endregion
 
     private ILessonsService _lessonsService;
     private ClassPlan? _currentMonitoredClassPlan;
     private List<Timetable.Lesson> _currentTimetable = new();
+    private readonly Settings _settings;
 
     #region Events
     private void OnLessonsServicePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -51,6 +57,14 @@ public class TimetableSyncService : IHostedService, ITimetableService
         ConsoleHelper.WriteLog($"发现课表内有课程变化，课表名称：{((ClassPlan)sender).Name}", "info");
         UpdateCurrentTimetableToMyBaby();
     }
+
+    private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Settings.IsTimetableSyncEnabled))
+        {
+            NotifyIsTimetableSyncEnabledChanged();
+        }
+    }
     #endregion
 
     #region Send to 宝宝
@@ -68,15 +82,30 @@ public class TimetableSyncService : IHostedService, ITimetableService
 
         ConsoleHelper.WriteLog("更新黑板贴课表", "info");
     }
+
+    private void NotifyIsTimetableSyncEnabledChanged()
+    {
+        var ipcService = IAppHost.GetService<IIpcService>();
+        ipcService.BroadcastNotificationAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
+
+        ConsoleHelper.WriteLog("通知黑板贴 IsTimetableSyncEnabledChanged 已改变", "info");
+    }
     #endregion
 
     #region Start & End
+    public ConnectService(Settings settings)
+    {
+        _settings = settings;
+    }
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _lessonsService = IAppHost.GetService<ILessonsService>();
 
         _lessonsService.PropertyChanged += OnLessonsServicePropertyChanged;
         ConsoleHelper.WriteLog("订阅课程服务属性变化事件", "info");
+
+        _settings.PropertyChanged += OnSettingsPropertyChanged;
 
         _currentMonitoredClassPlan = _lessonsService.CurrentClassPlan;
         _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
@@ -91,6 +120,8 @@ public class TimetableSyncService : IHostedService, ITimetableService
     {
         _currentMonitoredClassPlan.ClassesChanged -= OnClassesChanged;
         ConsoleHelper.WriteLog($"取消订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+
+        _settings.PropertyChanged -= OnSettingsPropertyChanged;
 
         _lessonsService.PropertyChanged -= OnLessonsServicePropertyChanged;
         ConsoleHelper.WriteLog("取消订阅课程服务属性变化事件", "info");

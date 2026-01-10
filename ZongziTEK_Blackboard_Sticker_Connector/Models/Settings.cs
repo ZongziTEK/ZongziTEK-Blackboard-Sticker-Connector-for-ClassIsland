@@ -9,16 +9,16 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Models
 {
     public class Settings : ObservableRecipient
     {
-        private bool _isTimetableShared = true;
+        private bool _isTimetableSyncEnabled = true;
         private bool _isClassIslandAutoHideEnabled = true;
 
-        public bool IsTimetableShared
+        public bool IsTimetableSyncEnabled
         {
-            get => _isTimetableShared;
+            get => _isTimetableSyncEnabled;
             set
             {
-                if (value == _isTimetableShared) return;
-                _isTimetableShared = value;
+                if (value == _isTimetableSyncEnabled) return;
+                _isTimetableSyncEnabled = value;
                 OnPropertyChanged();
             }
         }

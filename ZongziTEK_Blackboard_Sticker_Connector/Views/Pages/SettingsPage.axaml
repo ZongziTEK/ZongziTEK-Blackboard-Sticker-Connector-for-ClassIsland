@@ -27,7 +27,7 @@
 								 Header="同步课程表至黑板贴"
 								 Description="自动将当前显示的课程表发送至黑板贴，使黑板贴显示与 ClassIsland 相同的课程表">
 				<ui:SettingsExpander.Footer>
-					<ToggleSwitch IsChecked="{Binding Plugin.Settings.IsTimetableShared, Mode=TwoWay}"/>
+					<ToggleSwitch IsChecked="{Binding Plugin.Settings.IsTimetableSyncEnabled, Mode=TwoWay}"/>
 				</ui:SettingsExpander.Footer>
 			</ui:SettingsExpander>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE817;}"

@@ -41,13 +41,14 @@ namespace ZongziTEK_Blackboard_Sticker_Connector
             services.AddSettingsPage<SettingsPage>();
 
             // Add services
-            services.AddHostedService<TimetableSyncService>();
+            services.AddHostedService<ConnectService>();
             ConsoleHelper.WriteLog("注册课程表同步服务", "info");
+            services.AddSingleton(Settings);
 
             // IPC
             var ipcService = IAppHost.GetService<IIpcService>();
-            var timetableSyncService = IAppHost.GetService<TimetableSyncService>();
-            ipcService.IpcProvider.CreateIpcJoint<ITimetableService>(timetableSyncService);
+            var timetableSyncService = IAppHost.GetService<ConnectService>();
+            ipcService.IpcProvider.CreateIpcJoint<IConnectService>(timetableSyncService);
         }
     }
 }
