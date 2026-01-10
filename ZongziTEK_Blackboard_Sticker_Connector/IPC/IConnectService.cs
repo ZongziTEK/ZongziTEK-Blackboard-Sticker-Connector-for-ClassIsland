@@ -5,6 +5,6 @@ namespace ZongziTEK_Blackboard_Sticker.Shared.IPC;
 [IpcPublic(IgnoresIpcException = true)]
 public interface IConnectService
 {
-    Task<List<Timetable.Lesson>> GetCurrentTimetable();
+    Task<List<Lesson>> GetCurrentTimetable();
     Task<bool> GetIsTimetableSyncEnabled();
 }

@@ -1,6 +1,9 @@
 ﻿using ClassIsland.Core.Abstractions.Services;
 using ClassIsland.Shared;
 using ClassIsland.Shared.Models.Profile;
+using dotnetCampus.Ipc.CompilerServices.GeneratedProxies;
+using dotnetCampus.Ipc.IpcRouteds.DirectRouteds;
+using dotnetCampus.Ipc.Pipes;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
 using ZongziTEK_Blackboard_Sticker;
@@ -13,7 +16,7 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Services;
 public class ConnectService : IHostedService, IConnectService
 {
     #region Methods
-    public Task<List<Timetable.Lesson>> GetCurrentTimetable()
+    public Task<List<Lesson>> GetCurrentTimetable()
     {
         return Task.FromResult(_currentTimetable);
     }
@@ -26,7 +29,11 @@ public class ConnectService : IHostedService, IConnectService
 
     private ILessonsService _lessonsService;
     private ClassPlan? _currentMonitoredClassPlan;
-    private List<Timetable.Lesson> _currentTimetable = new();
+    private List<Lesson> _currentTimetable = new();
+    private IpcProvider _ipcProvider;
+    private JsonIpcDirectRoutedProvider _ipcDirectRoutedProvider;
+    private JsonIpcDirectRoutedClientProxy _ipcClient;
+
     private readonly Settings _settings;
 
     #region Events
@@ -74,22 +81,40 @@ public class ConnectService : IHostedService, IConnectService
         UpdateTimetableToMyBaby(TimetableHelper.GetCurrentTimetable());
     }
 
-    private void UpdateTimetableToMyBaby(List<Timetable.Lesson> timetable)
+    private void UpdateTimetableToMyBaby(List<Lesson> timetable)
     {
         _currentTimetable = timetable;
 
-        var ipcService = IAppHost.GetService<IIpcService>();
-        ipcService.BroadcastNotificationAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
+        _ipcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
 
         ConsoleHelper.WriteLog("更新黑板贴课表", "info");
     }
 
     private void NotifyIsTimetableSyncEnabledChanged()
     {
-        var ipcService = IAppHost.GetService<IIpcService>();
-        ipcService.BroadcastNotificationAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
+        _ipcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
 
         ConsoleHelper.WriteLog("通知黑板贴 IsTimetableSyncEnabledChanged 已改变", "info");
+    }
+    #endregion
+
+    #region IPC Connect
+    private async Task ConnectIpc()
+    {
+        var ipcProvider = new IpcProvider("ZongziTEK_Blackboard_Sticker_Connector");
+        var ipcDirectRoutedProvider = new JsonIpcDirectRoutedProvider(ipcProvider);
+
+        ipcProvider.CreateIpcJoint<IConnectService>(this);
+        ipcDirectRoutedProvider.StartServer();
+
+        _ipcProvider = ipcProvider;
+        _ipcDirectRoutedProvider = ipcDirectRoutedProvider;
+
+        ConsoleHelper.WriteLog("启动 IPC 服务器", "info");
+
+        _ipcClient = await _ipcDirectRoutedProvider.GetAndConnectClientAsync("ZongziTEK_Blackboard_Sticker");
+
+        ConsoleHelper.WriteLog("黑板贴已连接", "info");
     }
     #endregion
 
@@ -99,8 +124,10 @@ public class ConnectService : IHostedService, IConnectService
         _settings = settings;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
+        await ConnectIpc();
+
         _lessonsService = IAppHost.GetService<ILessonsService>();
 
         _lessonsService.PropertyChanged += OnLessonsServicePropertyChanged;
@@ -113,8 +140,6 @@ public class ConnectService : IHostedService, IConnectService
         ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
 
         UpdateCurrentTimetableToMyBaby();
-
-        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

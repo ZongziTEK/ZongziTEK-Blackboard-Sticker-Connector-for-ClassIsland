@@ -7,14 +7,14 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
 {
     public class TimetableHelper
     {
-        public static List<Timetable.Lesson> GetCurrentTimetable()
+        public static List<Lesson> GetCurrentTimetable()
         {
             return GetTimetableFromClassPlan(GetCurrentClassPlan());
         }
 
-        public static List<Timetable.Lesson> GetTimetableFromClassPlan(ClassPlan? classPlan)
+        public static List<Lesson> GetTimetableFromClassPlan(ClassPlan? classPlan)
         {
-            List<Timetable.Lesson> timetable = new();
+            List<Lesson> timetable = new();
 
             if (classPlan == null) return timetable;
 
@@ -23,7 +23,7 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
 
             foreach (var classInfo in classPlan.Classes)
             {
-                Timetable.Lesson lesson = new()
+                Lesson lesson = new()
                 {
                     Subject = GetSubjectName(classInfo.SubjectId),
                     StartTime = timeLayout.Layouts[classInfo.Index].StartTime,
