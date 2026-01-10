@@ -1,14 +1,9 @@
 ﻿using ClassIsland.Core.Abstractions;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Extensions.Registry;
-using ClassIsland.Shared;
 using ClassIsland.Shared.Helpers;
-using dotnetCampus.Ipc.CompilerServices.GeneratedProxies;
-using dotnetCampus.Ipc.IpcRouteds.DirectRouteds;
-using dotnetCampus.Ipc.Pipes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ZongziTEK_Blackboard_Sticker.Shared.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
 using ZongziTEK_Blackboard_Sticker_Connector.Services;

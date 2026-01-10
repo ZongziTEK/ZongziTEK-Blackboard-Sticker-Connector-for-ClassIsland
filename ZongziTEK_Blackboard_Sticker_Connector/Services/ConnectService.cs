@@ -49,13 +49,27 @@ public class ConnectService : IHostedService, IConnectService
     {
         ConsoleHelper.WriteLog("发现当前课表变化", "info");
 
-        _currentMonitoredClassPlan.ClassesChanged -= OnClassesChanged;
-        ConsoleHelper.WriteLog($"取消订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        if (_currentMonitoredClassPlan == null)
+        {
+            ConsoleHelper.WriteLog("上次无课表，不取消订阅课表内课程变化事件", "warn");
+        }
+        else
+        {
+            _currentMonitoredClassPlan.ClassesChanged -= OnClassesChanged;
+            ConsoleHelper.WriteLog($"取消订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        }
 
         _currentMonitoredClassPlan = _lessonsService.CurrentClassPlan;
 
-        _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
-        ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        if (_currentMonitoredClassPlan == null)
+        {
+            ConsoleHelper.WriteLog("当前无课表，不订阅课表内课程变化事件", "warn");
+        }
+        else
+        {
+            _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
+            ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        }
 
         UpdateCurrentTimetableToMyBaby();
     }

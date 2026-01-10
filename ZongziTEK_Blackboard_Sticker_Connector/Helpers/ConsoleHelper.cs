@@ -14,7 +14,7 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
             var levelColor = level.ToLower() switch
             {
                 "info" => ConsoleColor.Green,
-                "warning" => ConsoleColor.Yellow,
+                "warn" => ConsoleColor.Yellow,
                 "error" => ConsoleColor.Red,
                 "debug" => ConsoleColor.Gray,
                 _ => ConsoleColor.White
