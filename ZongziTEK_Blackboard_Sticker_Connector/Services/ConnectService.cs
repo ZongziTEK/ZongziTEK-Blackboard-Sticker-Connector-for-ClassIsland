@@ -106,15 +106,14 @@ public class ConnectService : IHostedService, IConnectService
 
         ipcProvider.CreateIpcJoint<IConnectService>(this);
         ipcDirectRoutedProvider.StartServer();
+        ConsoleHelper.WriteLog("启动 IPC 服务器", "info");
 
         _ipcProvider = ipcProvider;
         _ipcDirectRoutedProvider = ipcDirectRoutedProvider;
 
-        ConsoleHelper.WriteLog("启动 IPC 服务器", "info");
-
+        ConsoleHelper.WriteLog("开始连接黑板贴", "info");
         _ipcClient = await _ipcDirectRoutedProvider.GetAndConnectClientAsync("ZongziTEK_Blackboard_Sticker");
-
-        ConsoleHelper.WriteLog("黑板贴已连接", "info");
+        ConsoleHelper.WriteLog("已连接到黑板贴", "info");
     }
     #endregion
 
