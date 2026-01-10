@@ -12,14 +12,14 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Services;
 public class ConnectService : IHostedService, IConnectService
 {
     #region Methods
-    public List<Timetable.Lesson> GetCurrentTimetable()
+    public Task<List<Timetable.Lesson>> GetCurrentTimetable()
     {
-        return _currentTimetable;
+        return Task.FromResult(_currentTimetable);
     }
 
-    public bool GetIsTimetableSyncEnabled()
+    public Task<bool> GetIsTimetableSyncEnabled()
     {
-        return _settings.IsTimetableSyncEnabled;
+        return Task.FromResult(_settings.IsTimetableSyncEnabled);
     }
     #endregion
 
