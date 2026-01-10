@@ -5,6 +5,7 @@ using ClassIsland.Core.Abstractions.Controls;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Controls.IconControl;
 using ClassIsland.Core.Enums.SettingsWindow;
+using ZongziTEK_Blackboard_Sticker_Connector.Models;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Views.Pages;
 
@@ -19,12 +20,12 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Views.Pages;
 
 public partial class SettingsPage : SettingsPageBase
 {
-    public Plugin Plugin { get; }
+    public Settings Settings { get; set; }
 
-    public SettingsPage(Plugin plugin)
+    public SettingsPage(Settings settings)
     {
         InitializeComponent();
 
-        Plugin = plugin;
+        Settings = settings;
     }
 }

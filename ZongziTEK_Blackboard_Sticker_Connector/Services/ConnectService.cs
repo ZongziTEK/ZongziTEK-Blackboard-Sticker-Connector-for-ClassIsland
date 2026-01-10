@@ -3,8 +3,9 @@ using ClassIsland.Shared;
 using ClassIsland.Shared.Models.Profile;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
+using ZongziTEK_Blackboard_Sticker;
+using ZongziTEK_Blackboard_Sticker.Shared.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
-using ZongziTEK_Blackboard_Sticker_Connector.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Services;

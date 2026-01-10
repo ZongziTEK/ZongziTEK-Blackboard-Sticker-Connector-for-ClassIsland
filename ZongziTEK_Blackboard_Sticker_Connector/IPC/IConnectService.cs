@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using dotnetCampus.Ipc.CompilerServices.Attributes;
-using ZongziTEK_Blackboard_Sticker_Connector.Models;
+﻿using dotnetCampus.Ipc.CompilerServices.Attributes;
 
-namespace ZongziTEK_Blackboard_Sticker_Connector.IPC;
+namespace ZongziTEK_Blackboard_Sticker.Shared.IPC;
 
 [IpcPublic(IgnoresIpcException = true)]
 public interface IConnectService

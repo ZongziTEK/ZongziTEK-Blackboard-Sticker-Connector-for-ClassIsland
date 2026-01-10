@@ -9,44 +9,41 @@
 					 x:Class="ZongziTEK_Blackboard_Sticker_Connector.Views.Pages.SettingsPage">
 	<ScrollViewer DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:SettingsPage}}">
 		<StackPanel Spacing="4" Margin="24">
-			<StackPanel>
+			<StackPanel Margin="0 0 0 12">
 				<Label FontSize="20"
 					   VerticalAlignment="Center"
 					   Foreground="{DynamicResource TextFillColorTertiaryBrush}">
 					ZongziTEK 黑板贴连接器
 				</Label>
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-					<ci:FluentIcon FontSize="60"
-								   Glyph="&#xF082;"
-								   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-								   VerticalAlignment="Center" />
-					<Label VerticalAlignment="Center" FontSize="30">设置</Label>
-				</StackPanel>
+				<Label VerticalAlignment="Center"
+					   FontSize="30">
+					设置
+				</Label>
 			</StackPanel>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE161;}"
 								 Header="同步课程表至黑板贴"
 								 Description="自动将当前显示的课程表发送至黑板贴，使黑板贴显示与 ClassIsland 相同的课程表">
 				<ui:SettingsExpander.Footer>
-					<ToggleSwitch IsChecked="{Binding Plugin.Settings.IsTimetableSyncEnabled, Mode=TwoWay}"/>
+					<ToggleSwitch IsChecked="{Binding Settings.IsTimetableSyncEnabled, Mode=TwoWay}"/>
 				</ui:SettingsExpander.Footer>
 			</ui:SettingsExpander>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE817;}"
 								 Header="自动隐藏和显示 ClassIsland"
 								 Description="仅在黑板贴被遮挡时显示 ClassIsland，避免显示内容重复">
 				<ui:SettingsExpander.Footer>
-					<ToggleSwitch IsChecked="{Binding Plugin.Settings.IsClassIslandAutoHideEnabled, Mode=TwoWay}"/>
+					<ToggleSwitch IsChecked="{Binding Settings.IsClassIslandAutoHideEnabled, Mode=TwoWay}"/>
 				</ui:SettingsExpander.Footer>
 			</ui:SettingsExpander>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE025;}"
-                                 Header="配置课堂提醒来源"
-                                 Description="选择课堂提醒来源，以避免重复提醒">
+								 Header="配置课堂提醒来源"
+								 Description="选择课堂提醒来源，以避免重复提醒">
 				<ui:SettingsExpander.Footer>
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<Button Content="配置为 ClassIsland"/>
 						<Button Content="配置为黑板贴"/>
-                    </StackPanel>
-                </ui:SettingsExpander.Footer>
-            </ui:SettingsExpander>
+					</StackPanel>
+				</ui:SettingsExpander.Footer>
+			</ui:SettingsExpander>
 		</StackPanel>
 	</ScrollViewer>
 </ci:SettingsPageBase>
