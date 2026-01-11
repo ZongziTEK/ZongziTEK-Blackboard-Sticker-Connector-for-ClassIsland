@@ -123,8 +123,19 @@ public class ConnectService : IHostedService, IConnectService
     private void NotifyIsTimetableSyncEnabledChanged()
     {
         _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
-
         ConsoleHelper.WriteLog("通知黑板贴 IsTimetableSyncEnabledChanged 已改变", "info");
+    }
+
+    private void NotifyServiceStarted()
+    {
+        _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.ServiceStarted");
+        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 启动完毕", "info");
+    }
+
+    private void NotifyServiceStopped()
+    {
+        _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.ServiceStopped");
+        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 启动完毕", "info");
     }
     #endregion
 
@@ -171,6 +182,8 @@ public class ConnectService : IHostedService, IConnectService
         ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
 
         UpdateCurrentTimetableToMyBaby();
+
+        NotifyServiceStarted(); // 通知黑板贴服务本启动完毕，以实现黑板贴自动避让等功能
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -182,6 +195,8 @@ public class ConnectService : IHostedService, IConnectService
 
         _lessonsService.PropertyChanged -= OnLessonsServicePropertyChanged;
         ConsoleHelper.WriteLog("取消订阅课程服务属性变化事件", "info");
+
+        NotifyServiceStopped(); // 通知黑板贴本服务停止，以取消黑板贴的自动避让，或实现其它功能
 
         return Task.CompletedTask;
     }
