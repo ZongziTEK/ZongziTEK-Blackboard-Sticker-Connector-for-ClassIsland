@@ -135,7 +135,7 @@ public class ConnectService : IHostedService, IConnectService
     private void NotifyServiceStopped()
     {
         _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.ServiceStopped");
-        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 启动完毕", "info");
+        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 停止", "info");
     }
     #endregion
 
