@@ -6,6 +6,8 @@ using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Controls.IconControl;
 using ClassIsland.Core.Enums.SettingsWindow;
 using ClassIsland.Shared;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
 using ZongziTEK_Blackboard_Sticker_Connector.Services;
 
@@ -32,7 +34,7 @@ public partial class SettingsPage : SettingsPageBase
 
         Settings = settings;
 
-        connectService = IAppHost.TryGetService<ConnectService>();
+        connectService = IAppHost.Host.Services.GetServices<IHostedService>().OfType<ConnectService>().First();
 
         if (connectService != null)
         {
