@@ -4,7 +4,7 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
 {
     public class ConsoleHelper
     {
-        public static void WriteLog(string message, string level)
+        public static void WriteLog(string message, string level = "info")
         {
             // Timestamp
             var timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");

@@ -157,18 +157,6 @@ public class ConnectService : IHostedService, IConnectService
         _isFirstConnectionSucceed = true;
         Connected?.Invoke();
         ConsoleHelper.WriteLog("已连接到黑板贴", "info");
-    }
-    #endregion
-
-    #region Start & End
-    public ConnectService(Settings settings)
-    {
-        _settings = settings;
-    }
-
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        await ConnectIpc();
 
         _lessonsService = IAppHost.GetService<ILessonsService>();
 
@@ -182,8 +170,22 @@ public class ConnectService : IHostedService, IConnectService
         ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
 
         UpdateCurrentTimetableToMyBaby();
-
         NotifyServiceStarted(); // 通知黑板贴服务本启动完毕，以实现黑板贴自动避让等功能
+    }
+    #endregion
+
+    #region Start & End
+    public ConnectService(Settings settings)
+    {
+        _settings = settings;
+    }
+
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        _ = Task.Run(async () =>
+        {
+            await ConnectIpc();
+        });
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

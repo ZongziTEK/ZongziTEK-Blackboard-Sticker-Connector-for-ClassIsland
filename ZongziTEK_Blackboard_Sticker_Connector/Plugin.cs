@@ -1,4 +1,8 @@
-﻿using ClassIsland.Core.Abstractions;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using ClassIsland.Core;
+using ClassIsland.Core.Abstractions;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Extensions.Registry;
 using ClassIsland.Shared.Helpers;
@@ -34,6 +38,9 @@ namespace ZongziTEK_Blackboard_Sticker_Connector
             // Add services
             services.AddHostedService<ConnectService>();
             ConsoleHelper.WriteLog("注册课程表同步服务", "info");
+
+            services.AddHostedService<IslandService>();
+            ConsoleHelper.WriteLog("注册岛管服务", "info");
 
             // Add settings pages
             services.AddSettingsPage<SettingsPage>();
