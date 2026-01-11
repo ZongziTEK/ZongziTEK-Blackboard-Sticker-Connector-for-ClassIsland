@@ -55,12 +55,23 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
         public static bool GetIsSeparatorBelow(TimeLayout timeLayout, TimeLayoutItem currentItem)
         {
             var index = timeLayout.Layouts.IndexOf(currentItem);
+
             if (index == -1 || index >= timeLayout.Layouts.Count - 1)
             {
                 return false;
             }
 
-            return timeLayout.Layouts[index + 1].TimeType == 2;
+            if (timeLayout.Layouts[index + 1].TimeType == 1) // 下一项为课间
+            {
+                if (index >= timeLayout.Layouts.Count - 2) // 下一项课间为最后一项
+                {
+                    return false;
+                }
+
+                return timeLayout.Layouts[index + 2].TimeType == 2;
+            }
+
+            return timeLayout.Layouts[index + 1].TimeType == 2; // 下一项不为课间
         }
     }
 }
