@@ -29,14 +29,16 @@
 			</ui:SettingsExpander>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE817;}"
 								 Header="自动隐藏和显示 ClassIsland"
-								 Description="仅在黑板贴被遮挡时显示 ClassIsland，避免显示内容重复">
+								 Description="仅在黑板贴被遮挡时显示 ClassIsland，避免显示内容重复"
+								 IsVisible="False">
 				<ui:SettingsExpander.Footer>
 					<ToggleSwitch IsChecked="{Binding Settings.IsClassIslandAutoHideEnabled, Mode=TwoWay}"/>
 				</ui:SettingsExpander.Footer>
 			</ui:SettingsExpander>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE025;}"
 								 Header="配置课堂提醒来源"
-								 Description="选择课堂提醒来源，以避免重复提醒">
+								 Description="选择课堂提醒来源，以避免重复提醒"
+								 IsVisible="False">
 				<ui:SettingsExpander.Footer>
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<Button Content="配置为 ClassIsland"/>
