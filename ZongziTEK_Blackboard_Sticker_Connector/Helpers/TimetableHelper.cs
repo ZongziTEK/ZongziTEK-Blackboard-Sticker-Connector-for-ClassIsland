@@ -26,8 +26,8 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
                 Lesson lesson = new()
                 {
                     Subject = GetSubjectName(classInfo.SubjectId),
-                    StartTime = timeLayout.Layouts[classInfo.Index].StartTime,
-                    EndTime = timeLayout.Layouts[classInfo.Index].EndTime,
+                    StartTime = classInfo.CurrentTimeLayoutItem.StartTime,
+                    EndTime = classInfo.CurrentTimeLayoutItem.EndTime,
                     IsSplitBelow = GetIsSeparatorBelow(timeLayout, classInfo.CurrentTimeLayoutItem)
                 };
                 timetable.Add(lesson);

@@ -5,7 +5,9 @@ using ClassIsland.Core.Abstractions.Controls;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Controls.IconControl;
 using ClassIsland.Core.Enums.SettingsWindow;
+using ClassIsland.Shared;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
+using ZongziTEK_Blackboard_Sticker_Connector.Services;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Views.Pages;
 
@@ -22,10 +24,25 @@ public partial class SettingsPage : SettingsPageBase
 {
     public Settings Settings { get; set; }
 
+    private ConnectService connectService;
+
     public SettingsPage(Settings settings)
     {
         InitializeComponent();
 
         Settings = settings;
+
+        connectService = IAppHost.TryGetService<ConnectService>();
+
+        if (connectService != null)
+        {
+            connectService.Connected += CheckConnectionStatus;
+            CheckConnectionStatus();
+        }
+    }
+
+    private void CheckConnectionStatus()
+    {
+        InfoBarNoConnection.IsVisible = !connectService.IsFirstConnectionSucceed;
     }
 }

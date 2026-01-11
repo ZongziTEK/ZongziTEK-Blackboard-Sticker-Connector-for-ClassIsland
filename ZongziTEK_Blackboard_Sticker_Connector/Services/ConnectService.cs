@@ -28,12 +28,21 @@ public class ConnectService : IHostedService, IConnectService
     }
     #endregion
 
+    #region Public Values
+    public bool IsFirstConnectionSucceed => _isFirstConnectionSucceed;
+    #endregion
+
+    #region Public Events
+    public event ConnectedHandler Connected;
+    #endregion
+
     private ILessonsService _lessonsService;
     private ClassPlan? _currentMonitoredClassPlan;
     private List<Lesson> _currentTimetable = new();
     private IpcProvider _ipcProvider;
     private JsonIpcDirectRoutedProvider _ipcDirectRoutedProvider;
     private JsonIpcDirectRoutedClientProxy _jsonIpcClient;
+    private bool _isFirstConnectionSucceed;
 
     private readonly Settings _settings;
 
@@ -134,6 +143,8 @@ public class ConnectService : IHostedService, IConnectService
 
         ConsoleHelper.WriteLog("开始连接黑板贴", "info");
         _jsonIpcClient = await _ipcDirectRoutedProvider.GetAndConnectClientAsync("ZongziTEK_Blackboard_Sticker");
+        _isFirstConnectionSucceed = true;
+        Connected?.Invoke();
         ConsoleHelper.WriteLog("已连接到黑板贴", "info");
     }
     #endregion
@@ -177,3 +188,4 @@ public class ConnectService : IHostedService, IConnectService
     #endregion
 }
 
+public delegate void ConnectedHandler();

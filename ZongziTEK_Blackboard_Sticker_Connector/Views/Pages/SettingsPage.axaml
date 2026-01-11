@@ -20,6 +20,15 @@
 					设置
 				</Label>
 			</StackPanel>
+			<ui:InfoBar Name="InfoBarNoConnection"
+						IsClosable="False"
+						IsOpen="True"
+						Severity="Warning"
+						Title="未连接到黑板贴">
+				<Label Margin="-3 -20 0 8"
+					   FontSize="12"
+					   Content="请检查黑板贴是否启动、黑板贴联动设置中的“连接到 ClassIsland”是否启用。"/>
+			</ui:InfoBar>
 			<ui:SettingsExpander IconSource="{ci:FluentIconSource Glyph=&#xE161;}"
 								 Header="同步课程表至黑板贴"
 								 Description="自动将当前显示的课程表发送至黑板贴，使黑板贴显示与 ClassIsland 相同的课程表">

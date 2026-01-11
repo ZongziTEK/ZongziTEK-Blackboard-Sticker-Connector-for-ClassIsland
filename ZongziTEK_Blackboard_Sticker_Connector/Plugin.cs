@@ -31,12 +31,12 @@ namespace ZongziTEK_Blackboard_Sticker_Connector
             };
             services.AddSingleton(Settings);
 
-            // Add settings pages
-            services.AddSettingsPage<SettingsPage>();
-
             // Add services
             services.AddHostedService<ConnectService>();
             ConsoleHelper.WriteLog("注册课程表同步服务", "info");
+
+            // Add settings pages
+            services.AddSettingsPage<SettingsPage>();
         }
     }
 }
