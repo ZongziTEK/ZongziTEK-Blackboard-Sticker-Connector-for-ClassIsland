@@ -6,6 +6,7 @@ using dotnetCampus.Ipc.IpcRouteds.DirectRouteds;
 using dotnetCampus.Ipc.Pipes;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
+using dotnetCampus.Ipc.Context;
 using ZongziTEK_Blackboard_Sticker;
 using ZongziTEK_Blackboard_Sticker.Shared.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
@@ -32,7 +33,7 @@ public class ConnectService : IHostedService, IConnectService
     private List<Lesson> _currentTimetable = new();
     private IpcProvider _ipcProvider;
     private JsonIpcDirectRoutedProvider _ipcDirectRoutedProvider;
-    private JsonIpcDirectRoutedClientProxy _ipcClient;
+    private JsonIpcDirectRoutedClientProxy _jsonIpcClient;
 
     private readonly Settings _settings;
 
@@ -105,14 +106,14 @@ public class ConnectService : IHostedService, IConnectService
             return;
         }
 
-        _ipcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
+        _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
 
         ConsoleHelper.WriteLog("更新黑板贴课表", "info");
     }
 
     private void NotifyIsTimetableSyncEnabledChanged()
     {
-        _ipcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
+        _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
 
         ConsoleHelper.WriteLog("通知黑板贴 IsTimetableSyncEnabledChanged 已改变", "info");
     }
@@ -121,7 +122,7 @@ public class ConnectService : IHostedService, IConnectService
     #region IPC Connect
     private async Task ConnectIpc()
     {
-        var ipcProvider = new IpcProvider("ZongziTEK_Blackboard_Sticker_Connector");
+        var ipcProvider = new IpcProvider("ZongziTEK_Blackboard_Sticker_Connector", new IpcConfiguration { AutoReconnectPeers = true });
         var ipcDirectRoutedProvider = new JsonIpcDirectRoutedProvider(ipcProvider);
 
         ipcProvider.CreateIpcJoint<IConnectService>(this);
@@ -132,7 +133,7 @@ public class ConnectService : IHostedService, IConnectService
         _ipcDirectRoutedProvider = ipcDirectRoutedProvider;
 
         ConsoleHelper.WriteLog("开始连接黑板贴", "info");
-        _ipcClient = await _ipcDirectRoutedProvider.GetAndConnectClientAsync("ZongziTEK_Blackboard_Sticker");
+        _jsonIpcClient = await _ipcDirectRoutedProvider.GetAndConnectClientAsync("ZongziTEK_Blackboard_Sticker");
         ConsoleHelper.WriteLog("已连接到黑板贴", "info");
     }
     #endregion
