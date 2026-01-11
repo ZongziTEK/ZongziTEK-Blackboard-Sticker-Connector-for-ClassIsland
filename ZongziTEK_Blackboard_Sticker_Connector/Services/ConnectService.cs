@@ -99,6 +99,12 @@ public class ConnectService : IHostedService, IConnectService
     {
         _currentTimetable = timetable;
 
+        if (!_settings.IsTimetableSyncEnabled)
+        {
+            ConsoleHelper.WriteLog("TimetableSync 未启用，不更新黑板贴课表", "info");
+            return;
+        }
+
         _ipcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
 
         ConsoleHelper.WriteLog("更新黑板贴课表", "info");
