@@ -19,6 +19,8 @@ public class IslandService : IHostedService
     public event IslandTerritoryChangedHandler IslandTerritoryChanged;
 
     private IComponentsService _componentsService;
+    private dynamic? _viewModel;
+    private PropertyChangedEventHandler _viewModelPropertyChangedEventHandler;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -28,6 +30,10 @@ public class IslandService : IHostedService
             var app = AppBase.Current;
             while (app.MainWindow == null) ;
             app.MainWindow.Loaded += MainWindow_Loaded;
+
+            _viewModel = ((dynamic)app.MainWindow).ViewModel;
+            _viewModelPropertyChangedEventHandler = OnViewModelPropertyChanged;
+            _viewModel.PropertyChanged += _viewModelPropertyChangedEventHandler;
         });
 
         var settings = ((object)AppBase.Current).GetType().GetProperty("Settings")?.GetValue(AppBase.Current);
@@ -54,6 +60,8 @@ public class IslandService : IHostedService
 
         _componentsService.CurrentComponents.Lines.CollectionChanged -= Lines_CollectionChanged;
 
+        _viewModel.PropertyChanged -= _viewModelPropertyChangedEventHandler;
+
         return Task.CompletedTask;
     }
 
@@ -74,6 +82,23 @@ public class IslandService : IHostedService
         ConsoleHelper.WriteLog("IslandService 发现 ClassIsland 群岛行数发生变化");
 
         IslandTerritoryChanged?.Invoke();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "IsEditMode")
+        {
+            if (!_viewModel.IsEditMode)
+            {
+                ConsoleHelper.WriteLog("IslandService 发现 ClassIsland 编辑模式状态发生变化");
+
+                Task.Run(async () =>
+                {
+                    await Task.Delay(500); // 十分抽象等待编辑模式退出
+                    IslandTerritoryChanged?.Invoke();
+                });
+            }
+        }
     }
 }
 

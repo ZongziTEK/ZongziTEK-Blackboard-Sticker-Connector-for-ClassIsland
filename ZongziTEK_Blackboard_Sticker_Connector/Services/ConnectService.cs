@@ -170,27 +170,33 @@ public class ConnectService : IHostedService, IConnectService
 
         ipcProvider.CreateIpcJoint<IConnectService>(this);
         ipcDirectRoutedProvider.StartServer();
-        ConsoleHelper.WriteLog("启动 IPC 服务器", "info");
+        ConsoleHelper.WriteLog("启动 IPC 服务器");
 
         _ipcProvider = ipcProvider;
         _ipcDirectRoutedProvider = ipcDirectRoutedProvider;
 
-        ConsoleHelper.WriteLog("开始连接黑板贴", "info");
+        ConsoleHelper.WriteLog("开始连接黑板贴");
         _jsonIpcClient = await _ipcDirectRoutedProvider.GetAndConnectClientAsync("ZongziTEK_Blackboard_Sticker");
         _isFirstConnectionSucceed = true;
         Connected?.Invoke();
-        ConsoleHelper.WriteLog("已连接到黑板贴", "info");
+        ConsoleHelper.WriteLog("已连接到黑板贴");
 
         _lessonsService = IAppHost.GetService<ILessonsService>();
 
         _lessonsService.PropertyChanged += OnLessonsServicePropertyChanged;
-        ConsoleHelper.WriteLog("订阅课程服务属性变化事件", "info");
+        ConsoleHelper.WriteLog("订阅课程服务属性变化事件");
 
         _settings.PropertyChanged += OnSettingsPropertyChanged;
 
-        _currentMonitoredClassPlan = _lessonsService.CurrentClassPlan;
-        _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
-        ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        if (_currentMonitoredClassPlan == null)
+        {
+            ConsoleHelper.WriteLog("当前无课表，不订阅课表内课程变化事件", "warn");
+        }
+        else
+        {
+            _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
+            ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}");
+        }
 
         islandService = IAppHost.Host.Services.GetServices<IHostedService>().OfType<IslandService>().First();
         islandService.IslandTerritoryChanged += IslandService_IslandTerritoryChanged;
