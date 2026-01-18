@@ -17,9 +17,9 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
             app.Settings.IsMainWindowVisible = false;
         }
 
-        public static double GetOccupiedHeight()
+        public static double GetTerritoryHeight()
         {
-            if (GetIslandPosition() < 3) // 岛在上面
+            if (GetDockingLocation() < 3) // 岛在上面
             {
                 return GetIslandTotalHeight() + GetIslandOffsetY();
             }
@@ -35,7 +35,7 @@ namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
             return app.Settings.WindowDockingOffsetY;
         }
 
-        public static int GetIslandPosition()
+        public static int GetDockingLocation()
         {
             dynamic app = AppBase.Current;
             return app.Settings.WindowDockingLocation; // 0 1 2 在上，3 4 5 在下

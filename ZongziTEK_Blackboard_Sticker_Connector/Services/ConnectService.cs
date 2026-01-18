@@ -7,6 +7,7 @@ using dotnetCampus.Ipc.Pipes;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
 using dotnetCampus.Ipc.Context;
+using Microsoft.Extensions.DependencyInjection;
 using ZongziTEK_Blackboard_Sticker;
 using ZongziTEK_Blackboard_Sticker.Shared.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
@@ -26,6 +27,16 @@ public class ConnectService : IHostedService, IConnectService
     {
         return Task.FromResult(_settings.IsTimetableSyncEnabled);
     }
+
+    public Task<double> GetIslandTerritoryHeight()
+    {
+        return Task.FromResult(IslandHelper.GetTerritoryHeight());
+    }
+
+    public Task<int> GetIslandDockingLocation()
+    {
+        return Task.FromResult(IslandHelper.GetDockingLocation());
+    }
     #endregion
 
     #region Public Values
@@ -43,6 +54,7 @@ public class ConnectService : IHostedService, IConnectService
     private JsonIpcDirectRoutedProvider _ipcDirectRoutedProvider;
     private JsonIpcDirectRoutedClientProxy _jsonIpcClient;
     private bool _isFirstConnectionSucceed;
+    private IslandService islandService;
 
     private readonly Settings _settings;
 
@@ -97,6 +109,11 @@ public class ConnectService : IHostedService, IConnectService
             NotifyIsTimetableSyncEnabledChanged();
         }
     }
+
+    private void IslandService_IslandTerritoryChanged()
+    {
+        NotifyIslandTerritoryChanged();
+    }
     #endregion
 
     #region Send to 宝宝
@@ -111,31 +128,37 @@ public class ConnectService : IHostedService, IConnectService
 
         if (!_settings.IsTimetableSyncEnabled)
         {
-            ConsoleHelper.WriteLog("TimetableSync 未启用，不更新黑板贴课表", "info");
+            ConsoleHelper.WriteLog("TimetableSync 未启用，不更新黑板贴课表");
             return;
         }
 
         _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.TimetableUpdated");
 
-        ConsoleHelper.WriteLog("更新黑板贴课表", "info");
+        ConsoleHelper.WriteLog("更新黑板贴课表");
+    }
+
+    private void NotifyIslandTerritoryChanged()
+    {
+        _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.IslandTerritoryChanged");
+        ConsoleHelper.WriteLog("通知黑板贴岛领地变化");
     }
 
     private void NotifyIsTimetableSyncEnabledChanged()
     {
         _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.IsTimetableSyncEnabledChanged");
-        ConsoleHelper.WriteLog("通知黑板贴 IsTimetableSyncEnabledChanged 已改变", "info");
+        ConsoleHelper.WriteLog("通知黑板贴 IsTimetableSyncEnabledChanged 已改变");
     }
 
     private void NotifyServiceStarted()
     {
         _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.ServiceStarted");
-        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 启动完毕", "info");
+        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 启动完毕");
     }
 
     private void NotifyServiceStopped()
     {
         _jsonIpcClient.NotifyAsync("ZongziTEK_Blackboard_Sticker_Connector.ServiceStopped");
-        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 停止", "info");
+        ConsoleHelper.WriteLog("通知黑板贴 ConnectService 停止");
     }
     #endregion
 
@@ -169,8 +192,11 @@ public class ConnectService : IHostedService, IConnectService
         _currentMonitoredClassPlan.ClassesChanged += OnClassesChanged;
         ConsoleHelper.WriteLog($"订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
 
+        islandService = IAppHost.Host.Services.GetServices<IHostedService>().OfType<IslandService>().First();
+        islandService.IslandTerritoryChanged += IslandService_IslandTerritoryChanged;
+
         UpdateCurrentTimetableToMyBaby();
-        NotifyServiceStarted(); // 通知黑板贴服务本启动完毕，以实现黑板贴自动避让等功能
+        NotifyServiceStarted();
     }
     #endregion
 
@@ -190,13 +216,19 @@ public class ConnectService : IHostedService, IConnectService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _currentMonitoredClassPlan.ClassesChanged -= OnClassesChanged;
-        ConsoleHelper.WriteLog($"取消订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        if (_currentMonitoredClassPlan != null)
+        {
+            _currentMonitoredClassPlan.ClassesChanged -= OnClassesChanged;
+            ConsoleHelper.WriteLog($"取消订阅课表内课程变化事件，课表名称：{_currentMonitoredClassPlan.Name}", "info");
+        }
 
         _settings.PropertyChanged -= OnSettingsPropertyChanged;
 
-        _lessonsService.PropertyChanged -= OnLessonsServicePropertyChanged;
-        ConsoleHelper.WriteLog("取消订阅课程服务属性变化事件", "info");
+        if (_lessonsService != null)
+        {
+            _lessonsService.PropertyChanged -= OnLessonsServicePropertyChanged;
+            ConsoleHelper.WriteLog("取消订阅课程服务属性变化事件", "info");
+        }
 
         NotifyServiceStopped(); // 通知黑板贴本服务停止，以取消黑板贴的自动避让，或实现其它功能
 
