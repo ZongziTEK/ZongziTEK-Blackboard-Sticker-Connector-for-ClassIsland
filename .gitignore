@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# cipx
+ZongziTEK_Blackboard_Sticker_Connector/cipx

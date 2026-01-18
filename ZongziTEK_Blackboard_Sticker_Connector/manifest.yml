@@ -6,3 +6,6 @@ url: https://zongzitek.top
 version: 1.0.0.0
 apiVersion: 2.0.0.0
 author: ZongziTEK
+repoOwner: ZongziTEK
+repoName: ZongziTEK-Blackboard-Sticker-Connector-for-ClassIsland
+assetsRoot: master/ZongziTEK_Blackboard_Sticker_Connector
