@@ -1,6 +1,7 @@
 ﻿using dotnetCampus.Ipc.CompilerServices.Attributes;
+using ZongziTEK.BlackboardSticker;
 
-namespace ZongziTEK_Blackboard_Sticker.Shared.IPC;
+namespace ZongziTEK.BlackboardSticker.Shared.IPC;
 
 [IpcPublic(IgnoresIpcException = true)]
 public interface IConnectService

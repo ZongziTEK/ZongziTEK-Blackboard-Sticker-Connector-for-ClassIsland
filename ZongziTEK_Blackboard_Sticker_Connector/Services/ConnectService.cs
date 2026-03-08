@@ -8,8 +8,8 @@ using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
 using dotnetCampus.Ipc.Context;
 using Microsoft.Extensions.DependencyInjection;
-using ZongziTEK_Blackboard_Sticker;
-using ZongziTEK_Blackboard_Sticker.Shared.IPC;
+using ZongziTEK.BlackboardSticker;
+using ZongziTEK.BlackboardSticker.Shared.IPC;
 using ZongziTEK_Blackboard_Sticker_Connector.Helpers;
 using ZongziTEK_Blackboard_Sticker_Connector.Models;
 

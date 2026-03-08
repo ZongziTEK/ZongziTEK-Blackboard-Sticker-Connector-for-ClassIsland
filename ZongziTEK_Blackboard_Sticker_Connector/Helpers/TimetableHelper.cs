@@ -1,7 +1,7 @@
 ﻿using ClassIsland.Core.Abstractions.Services;
 using ClassIsland.Shared;
 using ClassIsland.Shared.Models.Profile;
-using ZongziTEK_Blackboard_Sticker;
+using ZongziTEK.BlackboardSticker;
 
 namespace ZongziTEK_Blackboard_Sticker_Connector.Helpers
 {

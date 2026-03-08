@@ -1,4 +1,4 @@
-﻿namespace ZongziTEK_Blackboard_Sticker;
+﻿namespace ZongziTEK.BlackboardSticker;
 
 public class Lesson
 {
